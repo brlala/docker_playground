@@ -4,8 +4,11 @@ Orchestrating docker containers
 # Useful commands
 1. `docker version` - check version and see if everythings working accordingly  
 2. `docker container run --publish 80:80 nginx` - pull image nginx and run it, forwarding connections from port 80 to port 80 inside container  
-    * `--detach` to run it in background
+    * `--publish` or `-p`
+    * `--detach` or `-d` to run it in background
     * `--name <name>` to name the container explicitly.  
+    * `-e PATH=XXX` for environment variables  
+e.g. `docker container run -d --name db -p 3306:3306  -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql`  
 3. `docker container ls` - list out running containers
     * `-a` can be used to list all containers available
 4. `docker container stop <container ID>` - stopping docker instance
@@ -17,6 +20,8 @@ Orchestrating docker containers
 9. `docker run -it --rm --privileged --pid=host justincormack/nsenter1` - connecting to docker VM [source](https://github.com/justincormack/nsenter1)
 10. `ps aux` - list all processes
     * `| grep <name>` can be used to filter process names
+11. `docker container inspect <name>` - to return the startup config of a container
+12. `docker container stats` - return streaming lives tats of all containers
     
 # Technical details
 ##### docker run
