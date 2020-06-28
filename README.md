@@ -14,6 +14,9 @@ Orchestrating docker containers
 7. `docker container --help` - list all commands
 8. `docker container rm <name> <name>...` - remove the containers, can take in multiple values. running containers will need to be stopped first
     * `-f` - force remove of container even if it's running
+9. `docker run -it --rm --privileged --pid=host justincormack/nsenter1` - connecting to docker VM [source](https://github.com/justincormack/nsenter1)
+10. `ps aux` - list all processes
+    * `| grep <name>` can be used to filter process names
     
 # Technical details
 ##### docker run
