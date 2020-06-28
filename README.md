@@ -9,6 +9,7 @@ Orchestrating docker containers
     * `--detach` or `-d` to run it in background
     * `--name <name>` to name the container explicitly.  
     * `-e PATH=XXX` for environment variables  
+    * `--network <network name>` - connects container to the said network
 e.g. `docker container run -d --name db -p 3306:3306  -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql`  
 3. `docker container ls` - list out running containers
     * `-a` can be used to list all containers available
@@ -24,13 +25,21 @@ e.g. `docker container run -d --name db -p 3306:3306  -e MYSQL_RANDOM_ROOT_PASSW
 9. `docker run -it --rm --privileged --pid=host justincormack/nsenter1` - connecting to docker VM [source](https://github.com/justincormack/nsenter1)
 10. `ps aux` - list all processes
     * `| grep <name>` can be used to filter process names
-11. `docker container inspect <name>` - to return the startup config of a container
+11. `docker container inspect <name>` - to return the configuration of the container
 12. `docker container stats` - return streaming lives tats of all containers
 
 ### Getting Shell inside containers
 13. `docker container run -it` - start new container interactively+psuedo TTY
 14. `docker container exec -it` - run additional command in existing container
 
+### Networking Commands
+`docker container port <name>` - see ports opened on container
+`docker container inspect --format '{{.NetworkSettings.IPAddress}}' webhost` - see host IP of docker container
+`docker network ls` - show all networks created
+`docker network inspect <network name>` - shows network related configuration like containers connected to the network, IP and gateway of the network
+`docker network create <network name>` - create a new network
+`docker network connect <network name> <name>` - connect network to container
+`docker network disconnect <network name> <name>` - disconnect network to container
     
 # Technical details
 ##### docker run
@@ -42,3 +51,8 @@ e.g. `docker container run -d --name db -p 3306:3306  -e MYSQL_RANDOM_ROOT_PASSW
 6. Open ports in `--publish <from>:<to port>` forward port 80 from host, to port 80 in the container
 7. Start container by using cmd in a Dockerfile
 e.g. `docker container run --publish 80:80 --name webhost -d nginx:1.11 nginx -t`
+
+#### docker network
+1. docker are started with their own virtual network `bridge/docker0` by default.
+2. containers with the same virtual network can talk to each other without having ports exposed
+3. if they are started with port `80:80` then the ethernet interface will start listening to connections at port 80
