@@ -5,11 +5,14 @@ Orchestrating docker containers
 ### Useful commands
 1. `docker version` - check version and see if everythings working accordingly  
 2. `docker container run --publish 80:80 nginx` - pull image nginx and run it, forwarding connections from port 80 to port 80 inside container  
-    * `--publish` or `-p`
+    * `--rm` remove container upon exit
+    * `-it` run commands, commands should be at last like `.... bash`
     * `--detach` or `-d` to run it in background
     * `--name <name>` to name the container explicitly.  
+    * `--publish` or `-p`
     * `-e PATH=XXX` for environment variables  
     * `--network <network name>` - connects container to the said network
+    * `--network-alias <dns name>` - dns name for lookup
 e.g. `docker container run -d --name db -p 3306:3306  -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql`  
 3. `docker container ls` - list out running containers
     * `-a` can be used to list all containers available
@@ -33,13 +36,13 @@ e.g. `docker container run -d --name db -p 3306:3306  -e MYSQL_RANDOM_ROOT_PASSW
 14. `docker container exec -it` - run additional command in existing container
 
 ### Networking Commands
-`docker container port <name>` - see ports opened on container
-`docker container inspect --format '{{.NetworkSettings.IPAddress}}' webhost` - see host IP of docker container
-`docker network ls` - show all networks created
-`docker network inspect <network name>` - shows network related configuration like containers connected to the network, IP and gateway of the network
-`docker network create <network name>` - create a new network
-`docker network connect <network name> <name>` - connect network to container
-`docker network disconnect <network name> <name>` - disconnect network to container
+`docker container port <name>` - see ports opened on container  
+`docker container inspect --format '{{.NetworkSettings.IPAddress}}' webhost` - see host IP of docker container  
+`docker network ls` - show all networks created  
+`docker network inspect <network name>` - shows network related configuration like containers connected to the network, IP and gateway of the network  
+`docker network create <network name>` - create a new network  
+`docker network connect <network name> <name>` - connect network to container  
+`docker network disconnect <network name> <name>` - disconnect network to container  
     
 # Technical details
 ##### docker run
@@ -56,3 +59,9 @@ e.g. `docker container run --publish 80:80 --name webhost -d nginx:1.11 nginx -t
 1. docker are started with their own virtual network `bridge/docker0` by default.
 2. containers with the same virtual network can talk to each other without having ports exposed
 3. if they are started with port `80:80` then the ethernet interface will start listening to connections at port 80
+
+#### docker with dns
+1. docker containers can be added to the same network 
+2. they will be referenced through each other using the `container name` regardless of what their IP address is
+3. `docker container exec -it my_nginx ping new_nginx`
+4. default network bridge does not has DNS service
