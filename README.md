@@ -9,7 +9,7 @@ Orchestrating docker containers
     * `-it` run commands, commands should be at last like `.... bash`
     * `--detach` or `-d` to run it in background
     * `--name <name>` to name the container explicitly.  
-    * `--publish` or `-p`
+    * `--publish` or `-p` to expose ports
     * `-e PATH=XXX` for environment variables  
     * `--network <network name>` - connects container to the said network
     * `--network-alias <dns name>` - dns name for lookup
@@ -55,10 +55,12 @@ e.g. `docker container run -d --name db -p 3306:3306  -e MYSQL_RANDOM_ROOT_PASSW
     
 # Dockerfile
 `FROM` all images must have a from normally from a minimal linux distribution
+`WORKDIR` change working directory, preferred over `RUN cd /path`
 `ENV` optional environment variable that is used for container building and running container
 `RUN` execute shell commands
 `EXPOSE` ports that are being exposed
 `CMD` command that will be run everytime we restart the container or everytime a container starts
+`COPY` copy from local our build machine into containers
 
 # Technical details
 ##### docker run
@@ -81,3 +83,9 @@ e.g. `docker container run --publish 80:80 --name webhost -d nginx:1.11 nginx -t
 2. they will be referenced through each other using the `container name` regardless of what their IP address is
 3. `docker container exec -it my_nginx ping new_nginx`
 4. default network bridge does not has DNS service
+
+# Examples and explanation
+`dockerfile-sample-1` - sample, ordering of docker commands matter. least change code should be at top  
+`dockerfile-sample-2` - copy .html into container while building  
+    * `docker image build -t nginx-with-html .`
+`dockerfile-assignment-1` - dockerizing a node app and pushing it onto the cloude
