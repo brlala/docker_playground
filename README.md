@@ -43,7 +43,23 @@ e.g. `docker container run -d --name db -p 3306:3306  -e MYSQL_RANDOM_ROOT_PASSW
 `docker network create <network name>` - create a new network  
 `docker network connect <network name> <name>` - connect network to container  
 `docker network disconnect <network name> <name>` - disconnect network to container  
+
+### Image Commands
+`docker image inspect <name>` - contains metadata like ports exposed, environment variables, command to run when an image is run
+`docker image tag <source_image> <new_image_tag>` - will create a new tag from the source image
+`docker image push <image_tag>` - push to dockerhub
+
+### Authentication Command
+`docker login` - login
+`docker logout` - logout
     
+# Dockerfile
+`FROM` all images must have a from normally from a minimal linux distribution
+`ENV` optional environment variable that is used for container building and running container
+`RUN` execute shell commands
+`EXPOSE` ports that are being exposed
+`CMD` command that will be run everytime we restart the container or everytime a container starts
+
 # Technical details
 ##### docker run
 1. Look for image locally
