@@ -1,7 +1,8 @@
 # docker_playground
 Orchestrating docker containers
 
-# Commands
+# Docker
+## Commands
 ### Useful commands
 1. `docker version` - check version and see if everythings working accordingly  
 2. `docker container run --publish 80:80 nginx` - pull image nginx and run it, forwarding connections from port 80 to port 80 inside container  
@@ -14,8 +15,7 @@ Orchestrating docker containers
     * `--network <network name>` - connects container to the said network
     * `--network-alias <dns name>` - dns name for lookup
     * `-v <mysql-db:/var/lib/mysql>` - assigning a name to a volume
-    * `-v </Users/test:/var/lib/mysql>` - bind mounting container to a folder, do note the path starts with a /
-e.g. `docker container run -d --name db -p 3306:3306  -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql`  
+    * `-v </Users/test:/var/lib/mysql>` - bind mounting container to a folder, do note the path starts with a `/`  e.g. `docker container run -d --name db -p 3306:3306  -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql`  
 3. `docker container ls` - list out running containers
     * `-a` can be used to list all containers available
 4. `docker container stop <container ID>` - stopping docker instance
@@ -48,31 +48,40 @@ e.g. `docker container run -d --name db -p 3306:3306  -e MYSQL_RANDOM_ROOT_PASSW
 `docker network disconnect <network name> <name>` - disconnect network to container  
 
 ### Image Commands
-`docker image inspect <name>` - contains metadata like ports exposed, environment variables, command to run when an image is run
-`docker image tag <source_image> <new_image_tag>` - will create a new tag from the source image
-`docker image push <image_tag>` - push to dockerhub
+`docker image inspect <name>` - contains metadata like ports exposed, environment variables, command to run when an image is run  
+`docker image tag <source_image> <new_image_tag>` - will create a new tag from the source image  
+`docker image push <image_tag>` - push to dockerhub  
 
 ### Volume commands
 `docker volume create`
 ### Authentication Command
-`docker login` - login
-`docker logout` - logout
+`docker login` - login  
+`docker logout` - logout  
     
 ### Batch commands
-`docker rm -f $(docker ps -a -q)` - delete all containers
-`docker volume rm $(docker volume ls -q)` - delete all volumes
-`docker image rm -f $(docker image ls -a)` - delete all images
+`docker rm -f $(docker ps -a -q)` - delete all containers  
+`docker volume rm $(docker volume ls -q)` - delete all volumes  
+`docker image rm -f $(docker image ls -a)` - delete all images  
 
+## Dockerfile
+`FROM` all images must have a from normally from a minimal linux distribution  
+`WORKDIR` change working directory, preferred over `RUN cd /path`  
+`ENV` optional environment variable that is used for container building and running container  
+`RUN` execute shell commands  
+`VOLUME` mounting a volume for persistent data, this needs manual delete for assurance  
+`EXPOSE` ports that are being exposed  
+`CMD` command that will be run everytime we restart the container or everytime a container starts  
+`COPY` copy from local our build machine into containers  
 
-# Dockerfile
-`FROM` all images must have a from normally from a minimal linux distribution
-`WORKDIR` change working directory, preferred over `RUN cd /path`
-`ENV` optional environment variable that is used for container building and running container
-`RUN` execute shell commands
-`VOLUME` mounting a volume for persistent data, this needs manual delete for assurance
-`EXPOSE` ports that are being exposed
-`CMD` command that will be run everytime we restart the container or everytime a container starts
-`COPY` copy from local our build machine into containers
+# Docker-compose
+## Commands
+### Useful commands
+1. `docker-compose ps` - show all running docker-compose  
+2. `docker-compose top` - show stats  
+3. `docker-compose up` - start docker-compose  
+    * `-d` detach container  
+4. `docker-compose down` - stop docker-compose  
+
 
 # Technical details
 ##### docker run
@@ -98,18 +107,20 @@ e.g. `docker container run --publish 80:80 --name webhost -d nginx:1.11 nginx -t
 
 # Examples and explanation
 #### Files
-`dockerfile-sample-1` - sample, ordering of docker commands matter. least change code should be at top  
-`dockerfile-sample-2` - copy .html into container while building  
-    * `docker image build -t nginx-with-html .`
-    * `docker container run -d --name nginx -p 80:80 -v $(pwd):/usr/share/nginx/html nginx` - mapping a volume
-`dockerfile-assignment-1` - dockerizing a node app and pushing it onto the cloude
-`bindmount-sample-1`
-    * `docker container run -p 80:4000 -v $(pwd):/site bretfisher/jekyll-serve` binding html changes for webapps
+1. `dockerfile-sample-1` - sample, ordering of docker commands matter. least change code should be at top  
+2. `dockerfile-sample-2` - copy .html into container while building  
+    * `docker image build -t nginx-with-html .`  
+    * `docker container run -d --name nginx -p 80:80 -v $(pwd):/usr/share/nginx/html nginx` - mapping a volume  
+3. `dockerfile-assignment-1` - dockerizing a node app and pushing it onto the cloude  
+4. `bindmount-sample-1`  
+    * `docker container run -p 80:4000 -v $(pwd):/site bretfisher/jekyll-serve` binding html changes for webapps  
+5. `compose-sample-1` - moving from dockerfile to docker-compose  
 
 #### Scenarios
-`upgrading database` using volumes
+1. `upgrading database` using volumes
     * `docker container run -d --name psql -v psql:/var/lib/postgresql/data -e POSTGRES_PASSWORD=password postgres:12.2`
     * `docker container run -d --name psql2 -v psql:/var/lib/postgresql/data -e POSTGRES_PASSWORD=password postgres:12.3`
-    
-`serving a changing html` using bind mount
+2. `docker container run --publish 80:80 nginx` - pull image nginx and run it, forwarding connections from port 80 to port 80 inside container  
+    * `--rm` remove container upon exit    
+2. `serving a changing html` using bind mount  
     * `docker container run -p 80:4000 -v $(pwd):/site bretfisher/jekyll-serve` binding html changes for webapps
