@@ -54,6 +54,7 @@ Orchestrating docker containers
 
 ### Volume commands
 `docker volume create`
+
 ### Authentication Command
 `docker login` - login  
 `docker logout` - logout  
@@ -62,6 +63,20 @@ Orchestrating docker containers
 `docker rm -f $(docker ps -a -q)` - delete all containers  
 `docker volume rm $(docker volume ls -q)` - delete all volumes  
 `docker image rm -f $(docker image ls -a)` - delete all images  
+
+### Cleanup commands
+    removecontainers() {
+        docker stop $(docker ps -aq)
+        docker rm $(docker ps -aq)
+    }
+    
+    armageddon() {
+        removecontainers
+        docker network prune -f
+        docker rmi -f $(docker images --filter dangling=true -qa)
+        docker volume rm $(docker volume ls --filter dangling=true -q)
+        docker rmi -f $(docker images -qa)
+    }
 
 ## Dockerfile
 `FROM` all images must have a from normally from a minimal linux distribution  
