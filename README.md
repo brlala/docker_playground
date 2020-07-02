@@ -196,6 +196,19 @@ e.g. `docker container run --publish 80:80 --name webhost -d nginx:1.11 nginx -t
 5. `swarm-app-1` - deploying a cluster app  
 6. `swarm-stack-1` - automatically create list of services deployed to cluster
 7. `secrets-sample-2` - creating secrets and passing secrets into a stack
-    
-    
-    
+8. `update the image to a newer version`
+    * `docker service update --image myapp:1.2.2 <service name>`
+8. `adding env variable and removing a port`
+    * `docker service update --env-add NODE_ENV=production --publish-rm 8080`
+8. `change number of replicas of two services`
+    * `docker service scale web=8 api=6`
+9. `scaling web services + rolling updates`
+    * `docker service create -p 8080:80 --name web nginx:1.13`
+    * `docker service scale web=5` - scaling 
+    * `docker service update --image nginx:1.13.6 web` - updating image
+    * `docker service update --publish-rm 8080 --publish-add 9090:80 web` - removing and changing a port
+    * `docker service update --force web` - rebalancing the tasks/workload in your node
+10. `adding healthcheck to a nginx`
+    * `docker container run --name p1 -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres` - without healthcheck
+    * `docker container run --name p2 -d -e POSTGRES_HOST_AUTH_METHOD=trust --health-cmd="pg_isready -U postgres || exit 1" postgres` - container with healthcheck    
+    * `docker service create --name p2 -e POSTGRES_HOST_AUTH_METHOD=trust --health-cmd="pg_isready -U postgres || exit 1" postgres` - service with healthcheck    
