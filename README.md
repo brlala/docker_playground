@@ -25,7 +25,8 @@ Orchestrating docker containers
 6. `docker container top <name>` - process running inside the container
 7. `docker container --help` - list all commands
 8. `docker container rm <name> <name>...` - remove the containers, can take in multiple values. running containers will need to be stopped first
-    * `-f` - force remove of container even if it's running
+    * `-f` - force remove of container even if it's running  
+9. `docker info` - display info of docker, use this to check swarm mode
     
 ### Monitoring commands
 9. `docker run -it --rm --privileged --pid=host justincormack/nsenter1` - connecting to docker VM [source](https://github.com/justincormack/nsenter1)
@@ -39,13 +40,14 @@ Orchestrating docker containers
 14. `docker container exec -it` - run additional command in existing container
 
 ### Networking Commands
-`docker container port <name>` - see ports opened on container  
-`docker container inspect --format '{{.NetworkSettings.IPAddress}}' webhost` - see host IP of docker container  
-`docker network ls` - show all networks created  
-`docker network inspect <network name>` - shows network related configuration like containers connected to the network, IP and gateway of the network  
-`docker network create <network name>` - create a new network  
-`docker network connect <network name> <name>` - connect network to container  
-`docker network disconnect <network name> <name>` - disconnect network to container  
+1. `docker container port <name>` - see ports opened on container  
+2. `docker container inspect --format '{{.NetworkSettings.IPAddress}}' webhost` - see host IP of docker container  
+3. `docker network ls` - show all networks created  
+4. `docker network inspect <network name>` - shows network related configuration like containers connected to the network, IP and gateway of the network  
+5. `docker network create <network name>` - create a new network  
+    * `--driver overlay` or `-d overlay` to create a network that spans across clusters  
+6. `docker network connect <network name> <name>` - connect network to container  
+7. `docker network disconnect <network name> <name>` - disconnect network to container  
 
 ### Image Commands
 `docker image inspect <name>` - contains metadata like ports exposed, environment variables, command to run when an image is run  
@@ -98,6 +100,26 @@ Orchestrating docker containers
 4. `docker-compose down` - stop docker-compose  
 
 
+# Docker-swarm
+## Commands
+### Useful commands
+1. `docker swarm init` - initiate docker swarm  
+2. `docker swarm join-token manager` - getting token of a manager
+2. `docker node ls` - list out all nodes/host/instances/servers  
+3. `docker node update --role manager node2` - escalating privilege of a docker node
+3. `docker service create alpine ping 8.8.8.8` - create a docker swarm
+4. `docker service ls` - show running services, under `REPLICAS` is how many is running on the left vs how many you specified it to run on the right
+5. `docker service ps <service name>` - - show us the taask/containers for the services
+6. `docker service update <service name> --replicas 3` - scaling up the nodes
+7. `docker service rm <service name>` - removing a service
+
+
+# Docker-machine
+## Commands
+### Useful commands
+1. `docker-machine create <node name>` - creates a node  
+2. `docker-machine ssh <node name>` - ssh into the container 
+
 # Technical details
 ##### docker run
 1. Look for image locally
@@ -120,6 +142,9 @@ e.g. `docker container run --publish 80:80 --name webhost -d nginx:1.11 nginx -t
 3. `docker container exec -it my_nginx ping new_nginx`
 4. default network bridge does not has DNS service
 
+#### docker swarm init
+1. security and automation, creates root certificate for swarm and join tokenes for nodes to join
+2. enables swarm api and create raft consensus database, ensure consistency across multiple nodes
 # Examples and explanation
 #### Files
 1. `dockerfile-sample-1` - sample, ordering of docker commands matter. least change code should be at top  
@@ -137,5 +162,16 @@ e.g. `docker container run --publish 80:80 --name webhost -d nginx:1.11 nginx -t
     * `docker container run -d --name psql2 -v psql:/var/lib/postgresql/data -e POSTGRES_PASSWORD=password postgres:12.3`
 2. `docker container run --publish 80:80 nginx` - pull image nginx and run it, forwarding connections from port 80 to port 80 inside container  
     * `--rm` remove container upon exit    
-2. `serving a changing html` using bind mount  
+3. `serving a changing html` using bind mount  
     * `docker container run -p 80:4000 -v $(pwd):/site bretfisher/jekyll-serve` binding html changes for webapps
+4. `creating a swarm connected by network`    
+    * `docker network create --driver overlay mydrupal`
+    * `docker service create --name psql --network mydrupal -e POSTGRES_PASSWORD=mypass postgres`
+    * `docker service ls` check services
+    * `docker service ps psql` check running individual service
+    * `docker container logs psql.1` checking logs of psql
+    * `docker service create --name drupal --network mydrupal -p 80:80 drupal`
+5. `swarm-app-1` - deploying a cluster app    
+    
+    
+    
