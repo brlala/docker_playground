@@ -120,6 +120,28 @@ Orchestrating docker containers
 1. `docker-machine create <node name>` - creates a node  
 2. `docker-machine ssh <node name>` - ssh into the container 
 
+
+# Docker-stack
+## Commands
+### Useful commands
+1. `docker stack ls` - list stack  
+2. `docker stack ps <stack name>` - see all tasks in the stack 
+2. `docker stack services <stack name>` - see all services in the stack 
+2. `docker stack deploy -c example-voting-app-stack.yml <stack name>` - deploying a stack 
+
+
+# Docker-secret
+## Commands
+### Useful commands
+1. `docker secret create <key name> <file path to password>` - pass in a file into a secret  
+    * do note that this require you to store the file locally which is a security concern. we can pass in through a remote API to bypass this
+2. `echo "<password>" | docker secret create <key name> -` - pass in the secret through command line 
+    * do note that this require you to use bash commands, someone with root access can see the history
+2. `docker secret ls` - show all passwords and keys 
+2. `docker service create --name psql --secret psql_user --secret psql_pass -e POSTGRES_PASSWORD_FILE=/run/secrets/psql_pass -e POSTGRES_USER_FILE=/run/secrets/psql_user postgres` - creating container and passing in secret
+2. `docker service update --secret-rm` - to remove password, however when a secret is removed, the containers are redeployed(immutable design) 
+
+
 # Technical details
 ##### docker run
 1. Look for image locally
@@ -171,7 +193,9 @@ e.g. `docker container run --publish 80:80 --name webhost -d nginx:1.11 nginx -t
     * `docker service ps psql` check running individual service
     * `docker container logs psql.1` checking logs of psql
     * `docker service create --name drupal --network mydrupal -p 80:80 drupal`
-5. `swarm-app-1` - deploying a cluster app    
+5. `swarm-app-1` - deploying a cluster app  
+6. `swarm-stack-1` - automatically create list of services deployed to cluster
+7. `secrets-sample-2` - creating secrets and passing secrets into a stack
     
     
     
