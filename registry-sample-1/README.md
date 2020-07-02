@@ -1,5 +1,14 @@
 # Commands for setting up a local registry
 
+docker container run -d -p 5000:5000 --name registry registry  
+docker pull hello-world  
+docker tag hello-world 127.0.0.1:5000/hello-world  
+docker push 127.0.0.1:5000/hello-world  
+docker image rm 127.0.0.1:5000/hello-world hello-world  
+docker image pull 127.0.0.1:5000/hello-world  
+
+# Commands for using volumes
+docker container run -d -p 5000:5000 --name registry -v /Users/lihengteh/PycharmProjects/docker_playground/registry-sample-1/registry-data:/var/lib/registry registry  
 
 - enable insecure registries in Daemon
 
