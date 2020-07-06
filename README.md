@@ -212,3 +212,18 @@ e.g. `docker container run --publish 80:80 --name webhost -d nginx:1.11 nginx -t
     * `docker container run --name p1 -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres` - without healthcheck
     * `docker container run --name p2 -d -e POSTGRES_HOST_AUTH_METHOD=trust --health-cmd="pg_isready -U postgres || exit 1" postgres` - container with healthcheck    
     * `docker service create --name p2 -e POSTGRES_HOST_AUTH_METHOD=trust --health-cmd="pg_isready -U postgres || exit 1" postgres` - service with healthcheck    
+    
+# Kubernetes
+## Commands
+
+# Technical details
+##### Basic System Parts
+1. Master Node: 
+    * etcd - distributed storage system for key-values (Similar to Swarm RAFT algorithm)
+    * API - Talk to cluster and issue order
+    * scheduler - controller how and where containers are placed on the nodes on object call pods
+    * Controller Manager - look at state of whole cluster and everything running in it, taking order given to it and determine the difference and do what you ask it to do
+    * CoreDNS - control network
+2. Node:
+    * kubelet - kubernetes agent running on nodes
+    * kube-proxy - to control the networking
