@@ -215,6 +215,25 @@ e.g. `docker container run --publish 80:80 --name webhost -d nginx:1.11 nginx -t
     
 # Kubernetes
 ## Commands
+1. `kubectl run` - running a pod
+2. `kubectl create` - creating resource for CLI/YAML
+3. `kubectl apply` - use to update difference
+4. `kubectl version` - get version of client/server
+5. `kubectl run my-nginx --image nginx` - create and run an image
+6. `kubectl get pods` - get list of services running(hidden some)
+    * `-w` - watch command, to watch a linux command
+7. `kubectl get all` - get all services running including networks etc.
+8. `kubectl delete deployment my-nginx` - cleanup
+10. `kubectl delete pod/my-apache-5d589d69c7-ps6sj` - deleting a pod
+8. `kubectl scale <image name>`
+    * `--replicas <count>` - scale image
+    
+## Logs Command
+9. `kubectl logs deployment/my-apache` logs command
+    * `--follow`
+    * `--tail 1` - return last line only
+10. `kubectl logs -l run=my-apache` specifying labels to view all logs of different node at once. this is not a replacement to production loggin, use "Stern tool" for better log tailing
+11. `kubectl describe pod/my-apache-5d589d69c7-fkwvv` - similar to inspect command in swarm, describe specific pods
 
 # Technical details
 ##### Basic System Parts
@@ -227,3 +246,25 @@ e.g. `docker container run --publish 80:80 --name webhost -d nginx:1.11 nginx -t
 2. Node:
     * kubelet - kubernetes agent running on nodes
     * kube-proxy - to control the networking
+    
+#### Kubernetes Container Abstraction
+1. Pod - one or more containers running together one one node, basic unit of deployment, containers are always in pods
+2. Controller - creating/updating pods and other objects(controller, deployment, replicaset, statefulset, daemonset, job, cronjob)
+3. Service - network endpoint to connect to a pod(provide a consistent endpoint similar to DNS)
+4. namespace - filtered on the view of the kubectl commandline
+
+#### Kubernetes run command
+1. When a run command is issued the following controllers are created
+2. Deployment Controller -> Replica Set(use to manage if pod started is correct) -> Pod
+
+#### What happens when a scale is run
+1. When we type a scale command, we are updating the deployment specification
+2. deployment change replicaset to a set of 2 controllers
+3. relpicaset controller decided to change to 2 pods
+4. control plane assigns node to pod
+5. kubelet agent will be assigned to the pod and be executed on local docker agent
+
+#### Scenarios
+1. `scaling replica sets` using volumes
+    * `kubectl run my-apache --image httpd`
+    * `kubectl scale deploy/my-apache --replicas 2` - scaling to 2 services
