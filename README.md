@@ -84,6 +84,7 @@ Orchestrating docker containers
     
     `docker system prune --volumes` Use the -f or --force option to bypass the prompt.
     `docker system prune`
+    `docker network prune`
 
 ## Dockerfile
 `FROM` all images must have a from normally from a minimal linux distribution  
