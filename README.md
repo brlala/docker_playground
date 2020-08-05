@@ -11,10 +11,12 @@ Orchestrating docker containers
     * `--detach` or `-d` to run it in background
     * `--name <name>` to name the container explicitly.  
     * `--publish` or `-p` to expose ports
+        * exposing multiple ports `docker run -d --name some-rabbit -p 5672:5672 -p 5673:5673 -p 15672:15672 rabbitmq:3-management`
     * `-e PATH=XXX` for environment variables  
     * `--network <network name>` - connects container to the said network
     * `--network-alias <dns name>` - dns name for lookup
     * `-v <mysql-db:/var/lib/mysql>` - assigning a name to a volume
+        * mounting on windows `docker run -it -v "d:/data:/data" -p 6379:6379 --name redis -d redis`
     * `-v </Users/test:/var/lib/mysql>` - bind mounting container to a folder, do note the path starts with a `/`  e.g. `docker container run -d --name db -p 3306:3306  -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql`  
 3. `docker container ls` - list out running containers
     * `-a` can be used to list all containers available
