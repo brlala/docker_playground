@@ -81,6 +81,9 @@ Orchestrating docker containers
         docker volume rm $(docker volume ls --filter dangling=true -q)
         docker rmi -f $(docker images -qa)
     }
+    
+    `docker system prune --volumes` Use the -f or --force option to bypass the prompt.
+    `docker system prune`
 
 ## Dockerfile
 `FROM` all images must have a from normally from a minimal linux distribution  
