@@ -40,6 +40,7 @@ Orchestrating docker containers
 ### Getting Shell inside containers
 13. `docker container run -it` - start new container interactively+psuedo TTY
 14. `docker container exec -it` - run additional command in existing container
+    * `docker exec -it <container_name> bash`
 
 ### Networking Commands
 1. `docker container port <name>` - see ports opened on container  
